@@ -1,0 +1,14 @@
+{
+    "config": {
+        "max_responses": 5,
+        "name": "HellSearchEngine",
+        "version": 0.1
+    },
+    "files": [
+        "../resources\\file0.txt",
+        "../resources\\file1.txt",
+        "../resources\\file2.txt",
+        "../resources\\file3.txt",
+        "../resources\\file4.txt"
+    ]
+}
