@@ -72,7 +72,6 @@ void Creator::CreateConfig(){
 
     std::ofstream file_config(CONFIG_PATH);
     file_config << std::setw(4) << config << std::endl;
-    //file_config<<config;
     file_config.close();
 }
 
@@ -95,7 +94,6 @@ void Creator::CreateRequests() {
     requests["requests"] = words;
     std::ofstream file_requests(REQUESTS_PATH);
     file_requests << std::setw(4) << requests << std::endl;
-    //file_requests<<requests;
     file_requests.close();
 }
 
