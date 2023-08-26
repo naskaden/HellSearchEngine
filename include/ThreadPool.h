@@ -1,7 +1,6 @@
 #ifndef HELLSEARCHENGINE_THREADPOOL_H
 #define HELLSEARCHENGINE_THREADPOOL_H
 
-#pragma once
 #include <iostream>
 #include <algorithm>
 #include <iomanip>
