@@ -1,7 +1,6 @@
 #ifndef HELLSEARCHENGINE_SEARCHSERVER_H
 #define HELLSEARCHENGINE_SEARCHSERVER_H
 
-#pragma once
 #include "Base.h"
 #include "ConverterJSON.h"
 #include "InvertedIndex.h"
