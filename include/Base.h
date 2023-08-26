@@ -1,7 +1,6 @@
 #ifndef HELLSEARCHENGINE_BASE_H
 #define HELLSEARCHENGINE_BASE_H
 
-#pragma once
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
