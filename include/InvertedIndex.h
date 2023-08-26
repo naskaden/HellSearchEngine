@@ -1,7 +1,6 @@
 #ifndef HELLSEARCHENGINE_INVERTEDINDEX_H
 #define HELLSEARCHENGINE_INVERTEDINDEX_H
 
-#pragma once
 #include "Base.h"
 #include <iostream>
 #include <fstream>
