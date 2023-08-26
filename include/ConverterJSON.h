@@ -1,7 +1,6 @@
 #ifndef HELLSEARCHENGINE_CONVERTERJSON_H
 #define HELLSEARCHENGINE_CONVERTERJSON_H
 
-#pragma once
 #include "Base.h"
 #include <iostream>
 #include <fstream>
