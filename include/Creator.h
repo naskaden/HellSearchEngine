@@ -1,7 +1,6 @@
 #ifndef HELLSEARCHENGINE_CREATOR_H
 #define HELLSEARCHENGINE_CREATOR_H
 
-#pragma once
 #include "Base.h"
 #include <iostream>
 #include <fstream>
