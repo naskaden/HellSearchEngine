@@ -2,13 +2,14 @@
 #define HELLSEARCHENGINE_CONVERTERJSON_H
 
 #include "Base.h"
+#include "Creator.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <filesystem>
+#include <thread>
 
 namespace fs = std::filesystem;
-
 
 class ConverterJSON{
 public:
@@ -20,7 +21,6 @@ public:
     static int GetResponsesLimit(std::shared_ptr<Base> &_base);
     static void SetResponsesLimit(std::shared_ptr<Base> &_base, int val);
     static void PutAnswers(std::shared_ptr<Base> &_base, const std::shared_ptr<std::vector<std::vector<RelativeIndex>>> &input_answers);
-
 };
 
 #endif //HELLSEARCHENGINE_CONVERTERJSON_H

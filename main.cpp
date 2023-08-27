@@ -1,30 +1,13 @@
 #include <iostream>
 #include "Base.h"
-#include <fstream>
-#include "Creator.h"
 #include "ConverterJSON.h"
 #include "InvertedIndex.h"
 #include "SearchServer.h"
 
-//#define CREATE_CONFIG_FILE
-//#define CREATE_REQUESTS_FILE
 #define SEARCH
 //#define DIRECT_INPUT
 
 int main() {
-#ifdef CREATE_CONFIG_FILE
-    try{
-        Creator::CreateConfig();
-    }
-    catch(const std::string& message)
-    {
-        std::cerr <<message << std::endl;
-    }
-#endif
-
-#ifdef CREATE_REQUESTS_FILE
-    Creator::CreateRequests();
-#endif
 
 #ifdef SEARCH
     auto base = std::make_shared<Base>();
@@ -89,5 +72,8 @@ int main() {
         std::cerr <<message << std::endl;
     }
 #endif
+    std::cout<<"Press any key to continue..."<<std::endl;
+    std::cin.ignore();
+    std::cin.get();
 }
 

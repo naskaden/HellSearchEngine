@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/)
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
@@ -15,3 +17,5 @@ add_subdirectory(tests)
 
 add_executable(${PROJECT_NAME} main.cpp ${sources} ${headers} include/ThreadPool.h)
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+
+

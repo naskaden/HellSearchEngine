@@ -13,7 +13,6 @@ std::string ConverterJSON::ReadText(const std::string &path) {
 
 void ConverterJSON::GetConfig(std::shared_ptr<Base> &_base){
     std::ifstream file_config(CONFIG_PATH);
-    //std::ifstream file_config("../../config.json");
     if(file_config.fail()){
         file_config.close();
         throw std::string{"Config file does not exist"};
@@ -67,7 +66,9 @@ std::shared_ptr<std::vector<std::string>> ConverterJSON::GetTextDocuments(std::s
         }
         catch(const std::string& message){
             std::cerr <<message << std::endl;
-            exit(0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            Creator::CreateConfig();
+            ConverterJSON::GetConfig(_base);
         }
     }
 
@@ -80,13 +81,14 @@ std::shared_ptr<std::vector<std::string>> ConverterJSON::GetTextDocuments(std::s
         files_paths = *it;
     }
 
-    for(auto path:files_paths){
+    for(const auto& path:files_paths){
         try{
             auto text = ConverterJSON::ReadText(path);
             _base->docs.push_back(text);
         }
         catch(const std::string& message){
             std::cerr <<message << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }
     return std::make_shared<std::vector<std::string>>(_base->docs);
@@ -99,7 +101,8 @@ int ConverterJSON::GetResponsesLimit(std::shared_ptr<Base> &_base) {
         }
         catch(const std::string& message){
             std::cerr <<message << std::endl;
-            exit(0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            Creator::CreateConfig();
         }
     }
     auto it = _base->config.find("config");
@@ -124,8 +127,8 @@ void ConverterJSON::SetResponsesLimit(std::shared_ptr<Base> &_base, int val){
 void ConverterJSON::PutAnswers(std::shared_ptr<Base> &_base, const std::shared_ptr<std::vector<std::vector<RelativeIndex>>> &input_answers){
     ordered_json answers;
     std::map<std::string,ordered_json> request_answer;
-    ordered_json result;
     for(int req = 0; req<input_answers->size(); req++){
+        ordered_json result;
         std::stringstream s;
         s<<"request"<<std::setfill('0')<<std::setw(3)<<req+1;
         auto current_ans = input_answers->at(req);
@@ -140,7 +143,15 @@ void ConverterJSON::PutAnswers(std::shared_ptr<Base> &_base, const std::shared_p
         else{
             result["result"] = "true";
             std::vector<std::pair<std::pair<std::string,int>,std::pair<std::string,float>>> relevance;
-            int limit = ConverterJSON::GetResponsesLimit(_base);
+            int limit;
+            try{
+                limit = ConverterJSON::GetResponsesLimit(_base);
+            }
+            catch(const std::string& message){
+                std::cerr <<message << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                Creator::CreateConfig();
+            }
             int size = current_ans.size();
             int max = limit > size ? size : limit;
             for(int i=0; i<max;i++){
@@ -148,7 +159,7 @@ void ConverterJSON::PutAnswers(std::shared_ptr<Base> &_base, const std::shared_p
                 float t = roundf(100*current_ans.at(i).rank)/100;
                 auto p2 = std::make_pair("rank", t);
                 auto p = std::make_pair(p1,p2);
-                relevance.push_back(p);
+                relevance.emplace_back(p);
             }
             result["relevance"] = relevance;
         }
@@ -156,11 +167,10 @@ void ConverterJSON::PutAnswers(std::shared_ptr<Base> &_base, const std::shared_p
 
     }
     answers["answers"] = request_answer;
-    std::ofstream file_answers(ANSWERS_PATH, std::ios::out);
+    std::ofstream file_answers(ANSWERS_PATH);
     file_answers << std::setw(4) << answers << std::endl;
     file_answers.close();
     std::cout<<"Answers are in the file 'answers.json'"<<std::endl;
-
 }
 
 

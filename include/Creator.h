@@ -13,8 +13,6 @@ public:
     Creator() = default;
     static void CreateConfig();
     static void CreateRequests();
-
 };
-
 
 #endif //HELLSEARCHENGINE_CREATOR_H

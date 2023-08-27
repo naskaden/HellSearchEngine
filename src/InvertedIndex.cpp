@@ -3,8 +3,10 @@
 void InvertedIndex::UpdateDocumentBase(std::shared_ptr<Base> &_base){
     try{
         ConverterJSON::GetTextDocuments(_base);
+        std::cout<<"Database is updated"<<std::endl;
 #ifdef SINGLETHREAD
         IndexDocumentBase(_base);
+        std::cout<<"Frequency dictionary is updated"<<std::endl;
 #endif
 #ifdef MULTITHREAD
 
@@ -28,6 +30,7 @@ void InvertedIndex::UpdateDocumentBase(std::shared_ptr<Base> &_base){
             }
         }
         MergeThreads(_base, many_dictionaries);
+        std::cout<<"Frequency dictionary is updated"<<std::endl;
 #endif
 #ifdef THREADPOOL
         /// Thread Pool
@@ -42,23 +45,38 @@ void InvertedIndex::UpdateDocumentBase(std::shared_ptr<Base> &_base){
         for(int id = 0; id<many_dictionaries.size(); id++){
             threads.AddTask(std::bind(&IndexThread::IndexDocument,&many_dictionaries[id]));
         }
-
         threads.WaitAll();
         MergeThreads(_base, many_dictionaries);
+        std::cout<<"Frequency dictionary is updated"<<std::endl;
 #endif
 #endif
     }
     catch(const std::string& message){
         std::cerr <<message << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
 void InvertedIndex::UpdateDocumentBase(std::shared_ptr<Base> &_base, const std::shared_ptr<std::vector<std::string>> &input_docs){
-    for(auto it:*input_docs){
-        _base->docs.push_back(it);
+    if(input_docs== nullptr){
+        try {
+            ConverterJSON::GetTextDocuments(_base);
+            *input_docs = _base->docs;
+        }
+        catch(const std::string& message) {
+            std::cerr << message << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
     }
+    else{
+        for(const auto& it:*input_docs){
+            _base->docs.push_back(it);
+        }
+    }
+    std::cout<<"Database is updated"<<std::endl;
 #ifdef SINGLETHREAD
     IndexDocumentBase(_base);
+    std::cout<<"Frequency dictionary is updated"<<std::endl;
 #endif
 
 #ifdef MULTITHREAD
@@ -82,6 +100,7 @@ void InvertedIndex::UpdateDocumentBase(std::shared_ptr<Base> &_base, const std::
         }
     }
     MergeThreads(_base, many_dictionaries);
+    std::cout<<"Frequency dictionary is updated"<<std::endl;
 #endif
 
 #ifdef THREADPOOL
@@ -100,6 +119,7 @@ void InvertedIndex::UpdateDocumentBase(std::shared_ptr<Base> &_base, const std::
 
     threads.WaitAll();
     MergeThreads(_base, many_dictionaries);
+    std::cout<<"Frequency dictionary is updated"<<std::endl;
 #endif
 #endif
 }
@@ -131,7 +151,7 @@ void InvertedIndex::IndexDocumentBase(std::shared_ptr<Base> &_base){
 
 #ifdef MULTITHREAD
 void InvertedIndex::MergeThreads(std::shared_ptr<Base> &_base, const std::vector<IndexThread> &thread_dictionaries){
-    for(auto thread_dictionary:thread_dictionaries){
+    for(const auto& thread_dictionary:thread_dictionaries){
         _base->freq_dictionary.insert(thread_dictionary.thread_freq_dictionary.begin(), thread_dictionary.thread_freq_dictionary.end());
     }
 }
@@ -146,8 +166,8 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::shared_ptr<Base> &_bas
         return key->second;
     }
     else{
-        std::cout<<"Word '"<<word<<"' not found in documents"<<std::endl;
-        return std::vector<Entry>();
+        //std::cout<<"Word '"<<word<<"' not found in documents"<<std::endl;
+        return {};
     }
 }
 
@@ -168,8 +188,8 @@ void IndexThread::IndexDocument() {
     std::set<std::string> unique_words(words.begin(),words.end());
     for(int id = 0; id<docs.size(); id++) {
         auto doc_words = InvertedIndex::ParseText(docs.at(id));
-        for (auto doc_word: doc_words) {
-            for (auto word: unique_words) {
+        for (const auto& doc_word: doc_words) {
+            for (const auto& word: unique_words) {
                 if (doc_word == word) {
                     auto key = thread_freq_dictionary.find(word);
                     if (key != thread_freq_dictionary.end()) {

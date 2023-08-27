@@ -7,7 +7,9 @@ std::shared_ptr<std::vector<std::vector<RelativeIndex>>> SearchServer::Search(st
         }
         catch(const std::string& message){
             std::cerr <<message << std::endl;
-            exit(0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            Creator::CreateRequests();
+            ConverterJSON::GetRequests(_base);
         }
     }
     std::vector<std::vector<RelativeIndex>> AllRelIndex;
@@ -19,19 +21,30 @@ std::shared_ptr<std::vector<std::vector<RelativeIndex>>> SearchServer::Search(st
     else{
         requests = *it;
     }
-    for(auto req:requests){
+    std::cout<<"Processing requests..."<<std::endl;
+    for(const auto& req:requests){
         auto RelIndex = SearchInRequest(_base,req);
         AllRelIndex.push_back(*RelIndex);
     }
+    std::cout<<"Search is completed"<<std::endl;
     return std::make_shared<std::vector<std::vector<RelativeIndex>>>(AllRelIndex);
 }
 
 std::shared_ptr<std::vector<std::vector<RelativeIndex>>> SearchServer::Search(std::shared_ptr<Base> &_base, const std::shared_ptr<std::vector<std::string>> &input_requests){
+    if(input_requests== nullptr){
+        std::cerr<<"Requests do not exist"<<std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        Creator::CreateRequests();
+        ConverterJSON::GetRequests(_base);
+        *input_requests = _base->requests;
+    }
+    std::cout<<"Processing requests..."<<std::endl;
     std::vector<std::vector<RelativeIndex>> AllRelIndex;
-    for(auto req:*input_requests){
+    for(const auto& req:*input_requests){
         auto RelIndex = SearchInRequest(_base,req);
         AllRelIndex.push_back(*RelIndex);
     }
+    std::cout<<"Search is completed"<<std::endl;
     return std::make_shared<std::vector<std::vector<RelativeIndex>>>(AllRelIndex);
 }
 
@@ -40,7 +53,7 @@ std::shared_ptr<std::vector<RelativeIndex>> SearchServer::SearchInRequest(std::s
     std::set<std::string> unique_words(words.begin(),words.end());
     std::vector<RelativeIndex> RelIndex;
     std::map<int,float> AbsIndex;
-    for(auto word:unique_words){
+    for(const auto& word:unique_words){
         auto word_count = InvertedIndex::GetWordCount(_base,word);
         if(!word_count.empty()){
             for(auto entry:word_count){
@@ -57,8 +70,11 @@ std::shared_ptr<std::vector<RelativeIndex>> SearchServer::SearchInRequest(std::s
     if(!AbsIndex.empty()){
         auto maxAbsIndex = std::max_element(AbsIndex.begin(), AbsIndex.end(), [](const auto &x, const auto &y){
             return x.second < y.second;})->second;
-        for(auto doc = AbsIndex.begin(); doc != AbsIndex.end(); doc++){
-            doc->second/=maxAbsIndex;
+//        for(auto doc = AbsIndex.begin(); doc != AbsIndex.end(); doc++){
+//            doc->second/=maxAbsIndex;
+//        }
+        for(auto& doc:AbsIndex){
+            doc.second/=maxAbsIndex;
         }
         std::multimap<float,int> SwapRelIndex;
         for(auto doc:AbsIndex){

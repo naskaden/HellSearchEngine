@@ -21,7 +21,6 @@ TEST(TestCaseSearchServer, TestSimple) {
             }
     };
     auto base = std::make_shared<Base>();
-    ConverterJSON::GetConfig(base,CONFIG_PATH_FOR_TEST);
     InvertedIndex::UpdateDocumentBase(base,docs_ptr);
     auto result = SearchServer::Search(base,requests_ptr);
     ASSERT_EQ(*result, expected);
@@ -64,7 +63,6 @@ TEST(TestCaseSearchServer, TestTop5) {
             }
     };
     auto base = std::make_shared<Base>();
-    ConverterJSON::GetConfig(base,CONFIG_PATH_FOR_TEST);
     InvertedIndex::UpdateDocumentBase(base,docs_ptr);
     auto result = SearchServer::Search(base,requests_ptr);
 

@@ -6,11 +6,10 @@
 using json = nlohmann::json;
 using ordered_json = nlohmann::basic_json<nlohmann::ordered_map>;
 
-#define CONFIG_PATH "../config.json"
-#define CONFIG_PATH_FOR_TEST "../../config.json"
-#define RESOURCES_PATH std::string{"../resources"}
-#define REQUESTS_PATH std::string{"../requests.json"}
-#define ANSWERS_PATH std::string{"../answers.json"}
+const std::string CONFIG_PATH {"config.json"};
+const std::string RESOURCES_PATH {"../resources"};
+const std::string REQUESTS_PATH {"requests.json"};
+const std::string ANSWERS_PATH {"answers.json"};
 
 struct Entry {
     size_t doc_id, count;

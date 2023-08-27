@@ -14,9 +14,10 @@
 
 class ThreadPool {
 public:
-    ThreadPool(int num_threads) {
+    explicit ThreadPool(int _num_threads) {
+        num_threads = _num_threads;
         for (int i = 0; i < num_threads; i++) {
-            threads.emplace_back(std::thread(&ThreadPool::Run, this));
+            threads.emplace_back(&ThreadPool::Run, this);
         }
     }
 
@@ -65,6 +66,7 @@ private:
         }
     }
 
+    int num_threads = 1;
     std::vector<std::thread> threads;
     std::queue<std::future<void>> tasks;
     std::mutex tasks_mtx;
