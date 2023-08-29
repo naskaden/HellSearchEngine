@@ -1,0 +1,7 @@
+# ninja log v5
+83	5911	7150467849599124	CMakeFiles/HellSearchEngine.dir/main.cpp.obj	e7c793a71a82beee
+59	6983	7150467860400265	CMakeFiles/HellSearchEngine.dir/src/SearchServer.cpp.obj	d7332db68211da2
+37	7680	7150467867361624	CMakeFiles/HellSearchEngine.dir/src/Creator.cpp.obj	bb8b04a085260753
+19	7833	7150467868917819	CMakeFiles/HellSearchEngine.dir/src/InvertedIndex.cpp.obj	8070f72ae9630dbc
+1	12612	7150467916691291	CMakeFiles/HellSearchEngine.dir/src/ConverterJSON.cpp.obj	9db03bbffdd4bd14
+12612	13058	7150467921086499	D:/GitHub/HellSearchEngine/bin/HellSearchEngine.exe	49a425f83e5bfc9b
