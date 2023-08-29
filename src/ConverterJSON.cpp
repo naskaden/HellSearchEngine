@@ -75,7 +75,7 @@ std::shared_ptr<std::vector<std::string>> ConverterJSON::GetTextDocuments(std::s
     std::vector<std::string> files_paths;
     auto it = _base->config.find("files");
     if(it==_base->config.end()){
-        throw std::string{"'files' are empty in config file"};
+        throw std::string{"Key 'files' not found in config file"};
     }
     else{
         files_paths = *it;
@@ -170,7 +170,15 @@ void ConverterJSON::PutAnswers(std::shared_ptr<Base> &_base, const std::shared_p
     std::ofstream file_answers(ANSWERS_PATH);
     file_answers << std::setw(4) << answers << std::endl;
     file_answers.close();
-    std::cout<<"Answers are in the file 'answers.json'"<<std::endl;
+    std::ifstream check_file_answers(ANSWERS_PATH);
+    if(!check_file_answers.fail()&&!check_file_answers.eof()){
+        check_file_answers.close();
+        std::cout<<"Answers are in the file 'answers.json'"<<std::endl;
+    }
+    else{
+        check_file_answers.close();
+        std::cout<<"Error writing file 'answers.json'"<<std::endl;
+    }
 }
 
 
