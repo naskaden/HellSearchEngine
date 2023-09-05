@@ -48,16 +48,15 @@ private:
     void Run() {
         std::future<void> task;
         while (true) {
-            {
-                std::unique_lock<std::mutex> lock(tasks_mtx);
-                tasks_cv.wait(lock, [this] { return !tasks.empty() || terminate; });
+            std::unique_lock<std::mutex> lock(tasks_mtx);
+            tasks_cv.wait(lock, [this] { return !tasks.empty() || terminate; });
 
-                if (terminate && tasks.empty()) {
-                    return;
-                }
-                task = std::move(tasks.front());
-                tasks.pop();
+            if (terminate && tasks.empty()) {
+                return;
             }
+            task = std::move(tasks.front());
+            tasks.pop();
+            lock.unlock();
             try {
                 task.get();
             } catch (std::runtime_error &ex) {
